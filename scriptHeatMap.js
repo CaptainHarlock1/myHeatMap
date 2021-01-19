@@ -13,7 +13,7 @@ req.onload = function(){
       generateScales();
       drawAxes();
       drawCells();
-      
+           
 };
 //--
 
@@ -65,6 +65,30 @@ let drawAxes = ()=> {
 }
 
 let drawCells = ()=> {
+
+      canvas.selectAll('rect')
+            .data(data)
+            .enter()
+            .append('rect')
+            .attr('class', 'cell')
+            .attr('fill', d=> {
+                  variance = d.variance
+                  if (variance <= -1) {
+                        return 'SteelBlue'
+                  }else if (variance <= 0){
+                        return 'LightGreen'
+                  }else if (variance <= 1){
+                        return "Yellow"
+                  }else {
+                        return "Red"
+                  }
+            })
+            .attr('data-month', d => d.month - 1)
+            .attr('data-year', d => d.year)
+            .attr('data-temp', d => {
+                  return (baseTemp + d.variance)
+            })
+
 
 }
 //--
