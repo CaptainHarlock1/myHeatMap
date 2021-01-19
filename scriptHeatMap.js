@@ -13,6 +13,7 @@ req.onload = function(){
       generateScales();
       drawAxes();
       drawCells();
+
            
 };
 //--
@@ -46,6 +47,7 @@ let generateScales = ()=> {
                   .range([padding, w-padding])
       
       yScale = d3.scaleTime()
+                  .domain([new Date(0, 0, 0, 0, 0, 0, 0), new Date(0, 12, 0, 0, 0, 0, 0)])
                   .range([padding, h-padding])
 }
 
@@ -88,6 +90,8 @@ let drawCells = ()=> {
             .attr('data-temp', d => {
                   return (baseTemp + d.variance)
             })
+            .attr('height', (h-2*padding)/12)
+            .attr('y', d => yScale(new Date(0, d.month-1, 0, 0, 0, 0, 0)))
 
 
 }
