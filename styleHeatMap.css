@@ -3,12 +3,12 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-color: rgb(20, 70, 117);
+    background-color: none
 }
 
 svg {
     background-color: none;
-    color: white;
+    color: rgb(247, 209, 85);
 }
 
 .title{
