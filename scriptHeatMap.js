@@ -24,6 +24,8 @@ let padding = 60;
 
 let canvas = d3.select('#canvas')
 
+let tooltip = d3.select('#tooltip')
+
 canvas.attr('width', w)
 canvas.attr('height', h)
 //--
@@ -40,7 +42,7 @@ let yScale
 
 let minYear
 let maxYear
-// let totalYears
+let totalYears
 //--
 
 //ορίζω τις απαραίτητες λειτουργίες μου-Define my basic functions--
@@ -65,6 +67,7 @@ let drawAxes = ()=> {
       let xAxis = d3.axisBottom(xScale)
                         .tickFormat(d3.format('d'))
       let yAxis = d3.axisLeft(yScale)
+                        .tickFormat(d3.timeFormat('%B'))
 
       canvas.append("g")
             .call(xAxis)
@@ -102,9 +105,19 @@ let drawCells = ()=> {
                   return (baseTemp + d.variance)
             })
             .attr('height', (h-2*padding)/12)
+            .attr('width', d => {
+                  totalYears = maxYear -minYear 
+                  return ((w-(2*padding))/totalYears)})
             .attr('y', d => yScale(new Date(0, d.month-1, 0, 0, 0, 0, 0)))
-            .attr('width', ((w-(2*padding))/(maxYear-minYear)))
-            .attr('x', d => d.year)
+            .attr('x', d => xScale(d.year))
+            .attr('mouseover', d => {
+                  tooltip.transition()
+                         .style('visibility', 'visible')
+                  
+                  tooltip.text(d.month + " - " + d.Year + (baseTemp + d.variance)+"°C")
+
+            })
+            .attr()
 
 
 }
