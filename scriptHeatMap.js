@@ -13,6 +13,7 @@ req.onload = function(){
       generateScales();
       drawAxes();
       drawCells();
+      drawLegend();
                        
 };
 //--
@@ -24,7 +25,7 @@ let padding = 60;
 
 let canvas = d3.select('#canvas')
 
-let tooltip = d3.select('#tooltip')
+let tooltip = d3.select('#tooltip')                
 
 canvas.attr('width', w)
 canvas.attr('height', h)
@@ -33,6 +34,14 @@ canvas.attr('height', h)
 //οριζω τις βασικές σταθερές μου-My basic data-vars--
 let baseTemp;
 let data = [];
+
+let colors = ['SteelBlue', "LightGreen", "Yellow", "Red"]
+let tempranges = [" < 7.66°C ", "7.66 - 8.66°C", "8.66 - 9.66°C", " > 9.66°C "]
+
+var margin = {top: 75, right: 15, bottom: 125, left: 85},
+    width = 1200 - margin.left - margin.right,
+    height = 555 - margin.top - margin.bottom;
+
 //--
 
 
@@ -73,11 +82,13 @@ let drawAxes = ()=> {
             .call(xAxis)
             .attr("id", "x-axis")
             .attr('transform', 'translate(0, '+ (h-padding) +') ')
+            .attr('color', 'white')
 
       canvas.append("g")
             .call(yAxis)
             .attr("id", "y-axis")
-            .attr("transform", "translate(" + padding + ", 0) ")     
+            .attr("transform", "translate(" + padding + ", 0) ")
+            .attr('color', 'white')     
 }
 
 let drawCells = ()=> {
@@ -110,17 +121,60 @@ let drawCells = ()=> {
                   return ((w-(2*padding))/totalYears)})
             .attr('y', d => yScale(new Date(0, d.month-1, 0, 0, 0, 0, 0)))
             .attr('x', d => xScale(d.year))
-            .attr('mouseover', d => {
+            .on('mouseover', (d) => {var x = d.srcElement.__data__;
                   tooltip.transition()
-                         .style('visibility', 'visible')
+                        .style("visibility", "visible")
                   
-                  tooltip.text(d.month + " - " + d.Year + (baseTemp + d.variance)+"°C")
-
+                        tooltip.text(x.year + " - " + (baseTemp + x.variance) + "°C")
+                  
+                  tooltip.attr("data-year", x.year)
+      
             })
-            .attr()
+            .on('mouseout', (d) => 
+                        tooltip.transition()
+                              .style('visibility', 'hidden') 
+            )
+}
 
+
+let drawLegend = () => {
+
+      var legend = d3.select("body")
+                     .append("svg")
+                     .attr('id', 'legend')
+                     .attr('width', 500)
+                     .attr('height', 50)
+                     .attr('class', 'legend')
+                     
+
+            legend.selectAll('rect')
+                  .data(colors)
+                  .enter()
+                  .append('rect')
+                  .attr('width', 100)
+                  .attr('height', 25)
+                  .attr('fill', d => d)
+                  .attr('x', (d, i)=> 100*i)
+                  .attr('y', 15)
+                  
+                  
+            legend.selectAll('text')
+                  .data(tempranges)
+                  .enter()
+                  .append("text")
+                  .attr('class', 'text')
+                  .attr('x', (d, i)=> 100*i+11)
+                  .attr('y', 32)
+                  .attr('padding', 2)
+                  .text(d => d)
+            
+           
 
 }
-//--
+
+
+
+
+
 
 
